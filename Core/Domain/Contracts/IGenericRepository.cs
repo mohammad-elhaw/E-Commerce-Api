@@ -6,6 +6,9 @@ namespace Domain.Contracts
     {
         Task<TEntity?> GetByIdAsync(TKey id);
         Task<IEnumerable<TEntity>> GetAllAsync(bool withTrack);
+        Task<TEntity?> GetByIdAsync(Specifications<TEntity> specifications);
+        Task<int> Count(Specifications<TEntity> specifications);
+        Task<IEnumerable<TEntity>> GetAllAsync(Specifications<TEntity> specifications);
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);

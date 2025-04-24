@@ -2,6 +2,9 @@ using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistance.Data;
 using Persistance.Data.DataSeeding;
+using Persistance.Repositories;
+using Services;
+using Services.Contracts;
 
 namespace E_Commerce_Api
 {
@@ -13,18 +16,20 @@ namespace E_Commerce_Api
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
             builder.Services.AddDbContext<AppDbContext>(opts =>
             {
                 opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString"));
             });
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IProductService, ProductService>();
 
             var app = builder.Build();
             await InitializeDbAsync(app);
 
             // Configure the HTTP request pipeline.
-
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

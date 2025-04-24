@@ -16,5 +16,17 @@ namespace Persistance.Repositories
         public async Task<TEntity?> GetByIdAsync(TKey id) =>
             await _dbContext.Set<TEntity>().FindAsync(id);
 
+        public async Task<TEntity?> GetByIdAsync(Specifications<TEntity> specifications) =>
+            await ApplySpecification(specifications).FirstOrDefaultAsync();
+
+        public async Task<IEnumerable<TEntity>> GetAllAsync(Specifications<TEntity> specifications) =>
+            await ApplySpecification(specifications).ToListAsync();
+
+        public async Task<int> Count(Specifications<TEntity> specifications) =>
+            await ApplySpecification(specifications).CountAsync();
+
+        private IQueryable<TEntity> ApplySpecification(Specifications<TEntity> specifications) =>
+            SpecificationEvaluator.GetQuery(_dbContext.Set<TEntity>(), specifications);
+
     }
 }
