@@ -1,4 +1,7 @@
 using Domain.Contracts;
+using E_Commerce_Api.Factories;
+using E_Commerce_Api.Middlewares;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistance.Data;
 using Persistance.Data.DataSeeding;
@@ -24,8 +27,15 @@ namespace E_Commerce_Api
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.Configure<ApiBehaviorOptions>(opts =>
+            {
+                opts.InvalidModelStateResponseFactory = ApiResponseFactory.CustomValidationSegment;
+            });
 
             var app = builder.Build();
+            app.ConfigureExceptionHandler();
+            app.ConfigureStatusCodePages();
+
             await InitializeDbAsync(app);
 
             // Configure the HTTP request pipeline.

@@ -1,5 +1,6 @@
 ﻿using Domain.Contracts;
 using Domain.Entities;
+using Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Services.Contracts;
 using Services.Factories;
@@ -13,7 +14,11 @@ namespace Services
     {
         public async Task<ProductResultDto> GetProductAsync(int id)
         {
-            var product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(new ProductWithBrandAndTypeSpecifications(id));
+            var product = await _unitOfWork.GetRepository<Product, int>()
+                .GetByIdAsync(new ProductWithBrandAndTypeSpecifications(id));
+
+            if(product is null) throw new ProductNotFoundException(id);
+
             var productToReturn = product.ToProductDto(_configuration["baseUrl"]);
             return productToReturn;
         }
