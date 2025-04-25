@@ -3,6 +3,7 @@ using E_Commerce_Api.Factories;
 using E_Commerce_Api.Middlewares;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Persistance;
 using Persistance.Data;
 using Persistance.Data.DataSeeding;
 using Persistance.Repositories;
@@ -20,17 +21,12 @@ namespace E_Commerce_Api
             // Add services to the container.
 
             builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
-            builder.Services.AddDbContext<AppDbContext>(opts =>
-            {
-                opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString"));
-            });
-            builder.Services.AddScoped<IDbInitializer, DbInitializer>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.Configure<ApiBehaviorOptions>(opts =>
             {
                 opts.InvalidModelStateResponseFactory = ApiResponseFactory.CustomValidationSegment;
             });
+            builder.Services.AddPersistence(builder.Configuration);
+            builder.Services.AddCoreServices();
 
             var app = builder.Build();
             app.ConfigureExceptionHandler();
