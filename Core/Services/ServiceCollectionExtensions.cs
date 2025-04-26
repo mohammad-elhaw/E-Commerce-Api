@@ -1,6 +1,4 @@
-﻿
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Services.Contracts;
 
 namespace Services
@@ -10,6 +8,7 @@ namespace Services
         public static IServiceCollection AddCoreServices(this IServiceCollection Services)
         {
             Services.AddScoped<IProductService, ProductService>();
+            Services.AddScoped<ICartService, CartService>();
             return Services;
         }
 

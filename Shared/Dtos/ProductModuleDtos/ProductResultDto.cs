@@ -1,4 +1,4 @@
-﻿namespace Shared.Dtos
+﻿namespace Shared.Dtos.ProductModuleDtos
 {
     public record ProductResultDto
     {

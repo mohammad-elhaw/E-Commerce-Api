@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Persistance.Data;
 using Persistance.Data.DataSeeding;
 using Persistance.Repositories;
+using StackExchange.Redis;
 
 namespace Persistance
 {
@@ -17,6 +18,11 @@ namespace Persistance
             });
             Services.AddScoped<IDbInitializer, DbInitializer>();
             Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            Services.AddScoped<ICartRepository, CartRepository>();
+            Services.AddSingleton<IConnectionMultiplexer>((_) =>
+            {
+                return ConnectionMultiplexer.Connect(configuration.GetConnectionString("RedisConnectionString"));
+            });
             return Services;
         }
     }

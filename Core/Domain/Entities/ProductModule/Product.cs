@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities
+﻿namespace Domain.Entities.ProductModule
 {
     public class Product : BaseEntity<int>
     {

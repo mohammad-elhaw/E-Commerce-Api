@@ -1,12 +1,12 @@
 ﻿using Domain.Contracts;
-using Domain.Entities;
+using Domain.Entities.ProductModule;
 using Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Services.Contracts;
 using Services.Factories;
 using Services.Specifications;
 using Shared;
-using Shared.Dtos;
+using Shared.Dtos.ProductModuleDtos;
 
 namespace Services
 {

@@ -1,5 +1,5 @@
 ﻿using Domain.Contracts;
-using Domain.Entities;
+using Domain.Entities.ProductModule;
 using Shared;
 
 namespace Services.Specifications

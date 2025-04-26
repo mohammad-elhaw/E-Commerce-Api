@@ -1,6 +1,6 @@
-﻿namespace Shared.Dtos
+﻿namespace Shared.Dtos.ProductModuleDtos
 {
-    public record BrandResultDto
+    public record TypeResultDto
     {
         public int Id { get; init; }
         public string Name { get; init; }

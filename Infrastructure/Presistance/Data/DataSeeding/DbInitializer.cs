@@ -1,4 +1,5 @@
 ﻿using Domain.Contracts;
+using Domain.Entities.ProductModule;
 using System.Text.Json;
 
 namespace Persistance.Data.DataSeeding

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Shared;
-using Shared.Dtos;
+using Shared.Dtos.ProductModuleDtos;
 
 namespace Presentation
 {

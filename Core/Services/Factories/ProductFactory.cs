@@ -1,5 +1,5 @@
-﻿using Domain.Entities;
-using Shared.Dtos;
+﻿using Domain.Entities.ProductModule;
+using Shared.Dtos.ProductModuleDtos;
 
 namespace Services.Factories
 {
