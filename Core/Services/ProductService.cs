@@ -1,4 +1,5 @@
-﻿using Domain.Contracts;
+﻿using Domain.Common;
+using Domain.Contracts;
 using Domain.Entities.ProductModule;
 using Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
@@ -12,15 +13,16 @@ namespace Services
 {
     public class ProductService(IUnitOfWork _unitOfWork, IConfiguration _configuration) : IProductService
     {
-        public async Task<ProductResultDto> GetProductAsync(int id)
+        public async Task<Result<ProductResultDto>> GetProduct(int id)
         {
             var product = await _unitOfWork.GetRepository<Product, int>()
                 .GetByIdAsync(new ProductWithBrandAndTypeSpecifications(id));
 
-            if(product is null) throw new ProductNotFoundException(id);
+            if (product is null) 
+                return Result<ProductResultDto>.Failure($"Product with id :{id} not found");
 
             var productToReturn = product.ToProductDto(_configuration["baseUrl"]);
-            return productToReturn;
+            return Result<ProductResultDto>.Success(productToReturn);
         }
 
         public async Task<IEnumerable<BrandResultDto>> GetBrandsAsync()

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Shared.Dtos.CartModuleDtos;
+using Shared.ErrorModels;
 
 namespace Presentation
 {
@@ -11,8 +13,14 @@ namespace Presentation
         [HttpGet("{key}")]
         public async Task<ActionResult<CartDto>> GetCart(string key)
         {
-            var cart = await cartService.GetCart(key);
-            return Ok(cart);
+            var result = await cartService.GetCart(key);
+            if(result.IsFailure)
+                return NotFound(new ErrorDetails
+                {
+                    Message = result.Error,
+                    StatusCode = StatusCodes.Status404NotFound
+                });
+            return Ok(result.Value);
         }
         [HttpPost]
         public async Task<ActionResult<CartDto>> CreateOrUpdateCart([FromBody] CartDto cartDto)

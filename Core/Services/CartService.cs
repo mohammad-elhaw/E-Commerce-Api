@@ -1,4 +1,5 @@
-﻿using Domain.Contracts;
+﻿using Domain.Common;
+using Domain.Contracts;
 using Domain.Exceptions;
 using Services.Contracts;
 using Services.Factories;
@@ -20,11 +21,12 @@ namespace Services
             await repository.DeleteCart(key);
         
 
-        public async Task<CartDto?> GetCart(string key)
+        public async Task<Result<CartDto>> GetCart(string key)
         {
             var cartEntity = await repository.GetCart(key);
-            if (cartEntity is null) throw new CartNotFoundException(key);
-            return cartEntity.ToCartDto();
+            if (cartEntity is not null) 
+                return Result<CartDto>.Success(cartEntity.ToCartDto());
+            return Result<CartDto>.Failure($"Cart with id: {key} not found");
         }
     }
 }
