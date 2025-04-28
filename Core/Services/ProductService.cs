@@ -1,7 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Contracts;
 using Domain.Entities.ProductModule;
-using Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Services.Contracts;
 using Services.Factories;

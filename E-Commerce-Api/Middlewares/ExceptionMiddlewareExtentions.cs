@@ -1,5 +1,4 @@
-﻿using Domain.Exceptions;
-using Microsoft.AspNetCore.Diagnostics;
+﻿using Microsoft.AspNetCore.Diagnostics;
 using Shared.ErrorModels;
 
 namespace E_Commerce_Api.Middlewares
