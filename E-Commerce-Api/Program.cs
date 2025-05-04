@@ -2,17 +2,12 @@ using Domain.Contracts;
 using E_Commerce_Api.Factories;
 using E_Commerce_Api.Middlewares;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Persistance;
-using Persistance.Data;
-using Persistance.Data.DataSeeding;
-using Persistance.Repositories;
 using Services;
-using Services.Contracts;
 
 namespace E_Commerce_Api
 {
-    public class Program
+    public static class Program
     {
         public static async Task Main(string[] args)
         {
@@ -26,7 +21,7 @@ namespace E_Commerce_Api
                 opts.InvalidModelStateResponseFactory = ApiResponseFactory.CustomValidationSegment;
             });
             builder.Services.AddPersistence(builder.Configuration);
-            builder.Services.AddCoreServices();
+            builder.Services.AddCoreServices(builder.Configuration);
 
             var app = builder.Build();
             app.ConfigureExceptionHandler();
@@ -35,22 +30,22 @@ namespace E_Commerce_Api
             await InitializeDbAsync(app);
 
             // Configure the HTTP request pipeline.
+            app.UseRouting();
             app.UseStaticFiles();
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
-
-
             app.MapControllers();
 
-            app.Run();
+            await app.RunAsync();
         }
 
         static async Task InitializeDbAsync(WebApplication app)
         {
             using var scope = app.Services.CreateScope();
-            var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-            await dbInitializer.InitializeAsync();
+            var dbInitializer = scope.ServiceProvider.GetRequiredService<IDataSeeding>();
+            await dbInitializer.DataSeed();
+            await dbInitializer.IdentityDataSeed();
         }
     }
 }
