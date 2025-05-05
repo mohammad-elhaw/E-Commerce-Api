@@ -33,6 +33,7 @@ public static class ServiceCollectionExtensions
                 ValidateLifetime = true,
             };
         });
+        Services.AddScoped<IOrderService, OrderService>();
         return Services;
     }
 
