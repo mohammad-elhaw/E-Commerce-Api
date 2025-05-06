@@ -14,6 +14,59 @@ public class AuthenticationService(
     UserManager<User> userManager,
     IConfiguration configuration) : IAuthenticationService
 {
+    public async Task<Result<UserResponseDto>> GetCurrentUser(string email)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+        if (user == null) return Result<UserResponseDto>.Failure("User email doesn't exist");
+
+        return Result<UserResponseDto>.Success(new UserResponseDto
+        {
+            Email = email,
+            DisplayName = user.DisplayName,
+            Token = await CreateToken(user)
+        });
+    }
+
+    public async Task<Result<UserAddressDto>> GetUserAddress(string email)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+        if (user == null) return Result<UserAddressDto>.Failure("User email doesn't exist");
+        return Result<UserAddressDto>.Success(new UserAddressDto
+        (
+            Street: user.Address?.Street ?? "NA",
+            City: user.Address?.City ?? "NA",
+            Country: user.Address?.Country ?? "NA"
+        ));
+    }
+
+    public async Task<bool> IsEmailExists(string email)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+        return user != null;
+    }
+    public async Task<Result<UserAddressDto>> UpdateUserAddress(string email, UpdateUserAddressDto updateUserAddressDto)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+        if (user == null) return Result<UserAddressDto>.Failure("User email doesn't exist");
+        user.Address = new Address
+        {
+            Street = updateUserAddressDto.Street,
+            City = updateUserAddressDto.City,
+            Country = updateUserAddressDto.Country
+        };
+        var result = await userManager.UpdateAsync(user);
+        if(!result.Succeeded)
+            return Result<UserAddressDto>.Failure(
+                string.Join("\n", result.Errors.Select(e => e.Description)));
+
+        return Result<UserAddressDto>.Success(new UserAddressDto
+        (
+            Street: user.Address.Street,
+            City: user.Address.City,
+            Country: user.Address.Country
+        ));
+    }
+
     public async Task<Result<UserResponseDto>> Login(LoginDto loginDto)
     {
         var user = await userManager.FindByEmailAsync(loginDto.Email);
@@ -57,7 +110,6 @@ public class AuthenticationService(
         return Result<UserResponseDto>
             .Failure($"User registration failed: {errors}");
     }
-
 
     private async Task<string> CreateToken(User user)
     {
